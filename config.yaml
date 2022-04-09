@@ -1,6 +1,7 @@
 path:
   data_dir: /home/stu00608/Repositories/js-fakes/midi/*.mid
   model_dir: models/
+  out_dir: outputs/
 params:
   data_size: 10
   vocab_size: 200
@@ -8,3 +9,7 @@ params:
   epochs: 50
   intensity: 90
   resolution: 24
+  tracks: 4
+output:
+  bpm: 120
+  length: 20
