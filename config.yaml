@@ -10,6 +10,6 @@ params:
   intensity: 90
   resolution: 24
   tracks: 4
-output:
   bpm: 120
+output:
   length: 20
