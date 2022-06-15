@@ -52,7 +52,6 @@ class NoteData(pretty_midi.Note):
 
 
 def check_intervals(beat: List[NoteData], start: float, end: float):
-
     '''
     Pass a list of `MidiData`. Returns a list of note off interval.
     '''
@@ -71,18 +70,17 @@ def check_intervals(beat: List[NoteData], start: float, end: float):
     return intervals
 
 
-
 class MidiData:
 
-    beat_duration = 1/(config['params']['bpm']/60) 
-    
+    beat_duration = 1/(config['params']['bpm']/60)
+
     def __init__(self, file=None) -> None:
 
         self.raw_midi = None
 
         if file:
             self.load_from_disk(file)
-    
+
     def load_from_disk(self, file):
 
         self.raw_midi = pretty_midi.PrettyMIDI(file)
@@ -91,19 +89,20 @@ class MidiData:
         for track in self.raw_midi.instruments:
             self.tracks.append(track)
             self.notes.append(track.notes)
-    
+            # print(track.notes)
+
     def encode(self):
 
-        
         self.all_encoded_notes = []
         self.all_encoded_beats = []
+        self.all_tracks_beats = []
         for track in self.notes:
 
             midi_start = track[0].start
             midi_end = track[-1].end
             beat_num = int((midi_end-midi_start)/self.beat_duration)
 
-            print(f"start={midi_start}, end={midi_end}, beat_num={beat_num}")
+            # print(f"start={midi_start}, end={midi_end}, beat_num={beat_num}")
 
             encoded_notes = []
             last_pitch = None
@@ -122,14 +121,14 @@ class MidiData:
                 # Check sustain by looking the start and end time is out of the beat range or not.
                 for note in notes:
                     sustain = (note.pitch != last_pitch or note.start < start)
-            
+
                     note_start = start if note.start <= start else note.start
                     note_end = end if note.end >= end else note.end
 
                     new_note = NoteData(90, note.pitch, note_start, note_end, sustain)
                     beat.append(new_note)
                     last_pitch = note.pitch
-        
+
                 # Check if there is any empty space.
                 # Use a TrainNote object with pitch 0 to represent note off.
                 intervals = check_intervals(beat, start, end)
@@ -137,11 +136,11 @@ class MidiData:
                     for interval in intervals:
                         note = NoteData(90, 0, interval[0], interval[1], 1)
                         beat.append(note)
-            
+
                     beat.sort(key=lambda x: x.start)
 
                 encoded_notes.append(beat)
-            
+
             encoded_beats = []
             for beat in encoded_notes:
                 encoded_note_list = []
@@ -149,28 +148,38 @@ class MidiData:
                     encoded_note_list.append(note.encode())
                 encoded_note_list = '#'.join(encoded_note_list)
                 encoded_beats.append(encoded_note_list)
-            
+
             self.all_encoded_beats.append(encoded_beats)
             self.all_encoded_notes.append(encoded_notes)
-        
+
+        for beat in range(len(self.all_encoded_beats[0])):
+            combined_beat = []
+            for i in range(4):
+                combined_beat.append(self.all_encoded_beats[i][beat])
+            combined_beat = ','.join(combined_beat)
+            self.all_tracks_beats.append(combined_beat)
+
     def decode(self, data=None, filename="output.mid"):
 
-        if not data:
-            data = self.all_encoded_beats
-        
+        # TODO: Only store data to self object. And write a output function for outputing self object to midi.
+
+        # TODO: Use ndarray.any()
+        # if data == None:
+        #     data = self.all_encoded_beats
+
         self.all_encoded_notes = []
         midi = pretty_midi.PrettyMIDI()
-        for index, track in enumerate(data):
-            timestamp = 0
-            track_encoded_notes = []
-            for beat in track:
-                notes = beat.split('#')
-                encoded_notes = []
-                for note in notes:
-                    new_note = NoteData(0, 0, 0, 0, 0)
-                    new_note.decode(note, timestamp)
-                    track_encoded_notes.append(new_note)
-                    timestamp += new_note.duration
+        timestamp = 0
+        track_encoded_notes = []
+        for index, beat in enumerate(data):
+
+            notes = beat.split('#')
+            encoded_notes = []
+            for note in notes:
+                new_note = NoteData(0, 0, 0, 0, 0)
+                new_note.decode(note, timestamp)
+                track_encoded_notes.append(new_note)
+                timestamp += new_note.duration
 
             notes = []
             current_note = [-1, -1]
@@ -181,22 +190,71 @@ class MidiData:
                 elif note == current_note and note[1]:
                     notes[-1].end = element.end
                 else:
-                    notes.append(pretty_midi.Note(element.velocity, element.pitch, element.start, element.end))
-    
+                    notes.append(pretty_midi.Note(element.velocity,
+                                                  element.pitch, element.start, element.end))
+
                 current_note = note
 
-            _instrument = pretty_midi.Instrument(0, False, f"Track {index+1}")
-            _instrument.pitch_bends.append(pretty_midi.PitchBend(0, 0))
-            _instrument.notes = notes
-            midi.instruments.append(_instrument)
-        
-            self.all_encoded_notes.append(track_encoded_notes)
+        # TODO: only return the decode result.
+        _instrument = pretty_midi.Instrument(0, False, f"Track 1")
+        _instrument.pitch_bends.append(pretty_midi.PitchBend(0, 0))
+        _instrument.notes = notes
+        midi.instruments.append(_instrument)
+
+        self.all_encoded_notes.append(track_encoded_notes)
 
         if self.raw_midi == None:
-                self.raw_midi = midi
+            self.raw_midi = midi
         midi.write(filename)
-            
-        
+
+
+class Dataset():
+
+    def __init__(self, path=config['path']['data_dir']) -> None:
+
+        self.file_path_list = glob(path)
+        self.encoded_midi_list = []
+        self.encoded_data_list = []
+
+    def load(self):
+
+        print("Loading & encoding data from disk.")
+
+        for file in tqdm(self.file_path_list):
+            midi = MidiData(file)
+            midi.encode()
+            self.encoded_midi_list.append(midi)
+            self.encoded_data_list.append(np.array(midi.all_encoded_beats))
+
+    def getSingleTrackTrainingData(self, track=0):
+
+        data = [tracks[track] for tracks in self.encoded_data_list]
+
+        x_train = []
+        y_train = []
+        data_size = config['params']['data_size']
+
+        for midi in data:
+            for i in range(len(midi)-data_size):
+                x_train.append(midi[i:i+data_size])
+                y_train.append(midi[i+data_size])
+
+        x_train = np.array(x_train)
+        y_train = np.array(y_train)
+
+        return x_train, y_train
+
+    def getConcatenatedTracks(self):
+        '''
+        Return tracks concat. For word2vec training.
+        '''
+
+        ds = [i.tolist() for i in self.encoded_data_list]
+        ds = sum(ds, [])
+        return ds
+
+    def concatMidis(self):
+        return np.concatenate(self.encoded_data_list, axis=1)
 
 
 # class Dataset():
@@ -213,7 +271,7 @@ class MidiData:
 
 #         self.file_size = len(self.midi_file_list)
 #         for file in tqdm(self.midi_file_list):
-            
+
 
 #     def encode(self, data='bin'):
 #         '''
@@ -225,7 +283,7 @@ class MidiData:
 #         '''
 #         Decode from the model raw output.
 
-#         find max prob position -> find key in dictionary -> decode.       
+#         find max prob position -> find key in dictionary -> decode.
 #         '''
 
 #     def tokenize(self):
@@ -248,7 +306,6 @@ class MidiData:
 #             train_data = np.array(train_data).reshape(train_data.shape[1:])
 
 #             self.train_data_all_tracks.append(train_data)
-
 #     def get_train_data(self, track=0):
 
 #         x_train = []

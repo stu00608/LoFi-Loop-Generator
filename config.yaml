@@ -4,9 +4,9 @@ path:
   out_dir: outputs/
 params:
   data_size: 10
-  vocab_size: 200
-  batch_size: 64
-  epochs: 50
+  vocab_size: 100
+  batch_size: 16
+  epochs: 20
   intensity: 90
   resolution: 24
   tracks: 4
