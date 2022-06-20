@@ -31,7 +31,7 @@ if __name__ == '__main__':
     else:
         dataset.load()
         with open(dataset_path, "wb") as f:
-            pickle.dump(dataset, f, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(dataset, f)
 
     sentences = dataset.getConcatenatedTracks()
     beatdict = BeatDictionary(sentences)
