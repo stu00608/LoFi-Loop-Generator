@@ -1,0 +1,5 @@
+gensim
+matplotlib
+pretty_midi
+PyYAML
+tqdm
