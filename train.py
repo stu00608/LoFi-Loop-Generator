@@ -8,7 +8,7 @@ import numpy as np
 import os
 import yaml
 import pickle
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 config = yaml.safe_load(open('config.yaml', 'r'))
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     else:
         dataset.load()
         with open(dataset_path, "wb") as f:
-            dataset = pickle.dump(dataset, f, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(dataset, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     sentences = dataset.getConcatenatedTracks()
     beatdict = BeatDictionary(sentences)
