@@ -12,5 +12,5 @@ params:
   tracks: 4
   bpm: 120
 output:
-  wandb: True
+  wandb: False
   length: 20

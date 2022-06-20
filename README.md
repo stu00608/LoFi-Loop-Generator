@@ -1,4 +1,4 @@
-# Run training.
+## Setup repo.
 
 ```
 git clone -b note https://github.com/stu00608/LoFi-Loop-Generator.git
@@ -66,4 +66,17 @@ python generate.py --name default-output --weights $WEIGHT --datasize 1 --batch 
 
 ```
 docker cp <container_id>:/lofi/<midi_file_name> /path/in/your/disk
+```
+
+## Local conda env
+
+```
+conda create -n lofi python=3.6.9
+```
+
+- Uncomment the tensorflow package version in `requirements.txt`.
+
+```
+conda activate lofi
+pip install -r requirements.txt
 ```

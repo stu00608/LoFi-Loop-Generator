@@ -142,34 +142,47 @@ class LoFiLoopNet():
         self.model.load_weights(path)
         print(f"Loaded weight {path}")
 
-    def generate(self, dataset: Dataset, beatdict: BeatDictionary, filename=str(len(os.listdir(config['path']['out_dir']))+1), length=config['output']['length'], bpm=config['params']['bpm'], track=0, data_size=0):
+    def predict(self, beatdict: BeatDictionary, beat):
+        '''
+        beat in, beat out. pred for visualizing.
+        '''
+        beat_vector = np.array([[beatdict.word_dict[beat]]])
+        pred = self.model.predict(beat_vector)
+        pred_beat = beatdict.index2beat(np.argmax(pred))
+
+        return pred, pred_beat
+
+    def generate(self, dataset: Dataset, beatdict: BeatDictionary, filename=str(len(os.listdir(config['path']['out_dir']))+1), length=config['output']['length'], bpm=config['params']['bpm'], track=0, data_size=config['params']['data_size'], topn=1):
 
         beats = bpm//60*length
         # NOTE: Use only track 0 for now.
         pick = random.randint(0, 500)
-
-        data_size = config['params']['data_size'] if data_size == 0 else data_size
 
         picked_seed = dataset.encoded_midi_list[pick]
         picked_seed = picked_seed.all_encoded_beats[track][:data_size]
         midi_sequence = picked_seed.copy()
         picked_seed = beatdict.vectorize(picked_seed)
         picked_seed = np.expand_dims(picked_seed, axis=0)
-        print(picked_seed.shape)
+        # print(picked_seed.shape)
 
         for _ in range(beats):
             next_beat = self.model.predict([picked_seed], verbose=0)
-            # (key, similarity) = beatdict.find_beat(next_beat[0])
-            next_beat = np.argmax(next_beat)
+            # NOTE: Apply topn prediction randomly choose 1 as next beat.
+            next_beat = np.argsort(next_beat, axis=1)[:, -topn:][0]
+            next_beat = np.flip(next_beat, 0)
+            # print(next_beat)
+            next_beat = random.sample(list(next_beat), 1)[0]
             next_beat = beatdict.index2beat(next_beat)
 
             midi_sequence = np.append(midi_sequence, [next_beat], axis=0)
-            print(midi_sequence)
+            # print(midi_sequence)
 
             picked_seed = np.append(picked_seed[0], [beatdict.word_dict[next_beat]], axis=0)
             picked_seed = picked_seed[1:, :]
             picked_seed = np.expand_dims(picked_seed, axis=0)
 
-            print(picked_seed.shape)
+            # print(picked_seed.shape)
+
+        print(midi_sequence)
 
         return midi_sequence
