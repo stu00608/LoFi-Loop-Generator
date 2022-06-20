@@ -3,12 +3,15 @@
 ```
 git clone -b note https://github.com/stu00608/LoFi-Loop-Generator.git
 cd LoFi-Loop-Generator
+git submodule init
+git submodule update
 ```
 
 ## Docker
 
 - Please follow Tensorflow Docker Installation first.
 - Modify the params in `entry.sh`.
+- **Remember to put your wandb api key** into `entry.sh`.
 
 ```
 docker build -t lofi . --no-cache

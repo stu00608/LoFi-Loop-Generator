@@ -10,7 +10,7 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86
 RUN dpkg -i cuda-keyring_1.0-1_all.deb
 
 RUN apt update -y
-RUN apt install git vim
+RUN apt install -y git vim
 RUN pip install --upgrade pip
 
 WORKDIR /lofi
