@@ -1,7 +1,6 @@
 from wandb.keras import WandbCallback
 import wandb
 from dataloader import *
-from datetime import datetime
 import os
 from glob import glob
 import random
@@ -14,13 +13,13 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from gensim.models import Word2Vec
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 config = yaml.safe_load(open('config.yaml', 'r'))
 
 if config['output']['wandb']:
     wandb.init(config=config['params'],
-            project='midi-lstm-exp-single-word2vec')
+               project='midi-lstm-exp-single-word2vec')
 
 
 class BeatDictionary():

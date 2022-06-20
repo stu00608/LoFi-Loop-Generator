@@ -16,6 +16,8 @@ WORKDIR /LoFi-Loop-Generator
 RUN mkdir outputs
 RUN mkdir models
 RUN mkdir data
+RUN git submodule init
+RUN git submodule update
 
 RUN pip install -r requirements.txt
 CMD [ "bash" ]

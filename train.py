@@ -4,7 +4,6 @@ import argparse
 from tensorflow.keras.utils import to_categorical
 from dataloader import *
 from model import *
-from midi_processing import *
 import numpy as np
 import os
 import yaml
