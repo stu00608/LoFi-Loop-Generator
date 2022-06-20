@@ -46,8 +46,8 @@ if __name__ == '__main__':
     model = LoFiLoopNet(args.name, x_train.shape[1:], beatdict.getDictSize())
     model.summary()
 
-    model.train(x_train, y_train, epochs=epochs,
-                batch_size=batch, data_size=args.datasize)
+    model.train(x_train, y_train, epochs=args.epochs,
+                batch_size=args.batch, data_size=args.datasize)
 
     # TODO: Make few inferences and upload to wandb.
     sequence = model.generate(dataset, beatdict)

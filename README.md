@@ -32,7 +32,12 @@ docker build -t lofi . --no-cache
 docker run --gpus all -it --rm lofi
 ```
 
-- To move the output midi file to your disk, use `docker cp`.
 ```
-docker cp <container_id>:/LoFi-Loop-Generator/default10-64-1000.mid /path/in/your/disk
+./entry.sh
+```
+
+- To move the output midi file to your disk, use `docker cp`.
+
+```
+docker cp <container_id>:/lofi/default10-64-1000.mid /path/in/your/disk
 ```

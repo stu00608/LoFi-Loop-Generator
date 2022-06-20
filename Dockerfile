@@ -1,4 +1,7 @@
 FROM tensorflow/tensorflow:2.4.0-gpu
+
+ADD . /lofi
+
 RUN rm /etc/apt/sources.list.d/cuda.list
 RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 RUN apt-key del 7fa2af80
@@ -9,15 +12,10 @@ RUN dpkg -i cuda-keyring_1.0-1_all.deb
 RUN apt update -y
 RUN pip install --upgrade pip
 
-RUN apt install -y git
-WORKDIR /
-RUN git clone -b note https://github.com/stu00608/LoFi-Loop-Generator.git
-WORKDIR /LoFi-Loop-Generator
-RUN mkdir outputs
-RUN mkdir models
-RUN mkdir data
-RUN git submodule init
-RUN git submodule update
+WORKDIR /lofi
+RUN mkdir -p outputs
+RUN mkdir -p models
+RUN mkdir -p data
 
 RUN pip install -r requirements.txt
-ENTRYPOINT [ "entry.sh" ]
+ENTRYPOINT [ "/bin/bash" ]
