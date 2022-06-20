@@ -1,5 +1,5 @@
 API_KEY=<your_api_key>
-EXP_NAME=exp0620
+EXP_NAME=default-experiment
 DATA_SIZE=1
 BATCH_SIZE=128
 EPOCHS=100
