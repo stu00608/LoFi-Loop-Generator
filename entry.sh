@@ -1,6 +1,6 @@
 !#/bin/bash
 
-API_KEY=$WANDB_API
+API_KEY=<Input your api key here>
 EXP_NAME=exp0620
 DATA_SIZE=1
 BATCH_SIZE=128

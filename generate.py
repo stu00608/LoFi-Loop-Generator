@@ -1,9 +1,8 @@
-from wandb.keras import WandbCallback
-import wandb
+
 import argparse
 from tensorflow.keras.utils import to_categorical
 from dataloader import *
-from model import *
+from model import BeatDictionary, LoFiLoopNet
 import numpy as np
 import os
 import yaml
@@ -15,6 +14,7 @@ config = yaml.safe_load(open('config.yaml', 'r'))
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--weights', type=str, help='Model weights path.')
     parser.add_argument('--batch', type=int, default=64, help='Model batch size.')
     parser.add_argument('--epochs', type=int, default=1000, help='Model training epochs.')
     parser.add_argument('--datasize', type=int, default=10, help='Model input data size.')
@@ -46,8 +46,7 @@ if __name__ == '__main__':
     model = LoFiLoopNet(args.name, x_train.shape[1:], beatdict.getDictSize())
     model.summary()
 
-    model.train(x_train, y_train, epochs=epochs,
-                batch_size=batch, data_size=args.datasize)
+    model.load_weights(args.weights)
 
     # TODO: Make few inferences and upload to wandb.
     sequence = model.generate(dataset, beatdict)

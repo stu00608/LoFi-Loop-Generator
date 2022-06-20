@@ -137,13 +137,10 @@ class LoFiLoopNet():
             wandb.save(os.path.join(config['path']['model_dir'], self.filepath))
             wandb.finish()
 
-    def load_last_weight(self):
+    def load_weights(self, path):
 
-        model_list = glob(config['path']['model_dir']+'*.hdf5')
-        latest_model = max(model_list, key=os.path.getctime)
-        self.model.load_weights(latest_model)
-
-        print(f"Loaded weight {os.path.split(latest_model)[-1]}")
+        self.model.load_weights(path)
+        print(f"Loaded weight {path}")
 
     def generate(self, dataset: Dataset, beatdict: BeatDictionary, filename=str(len(os.listdir(config['path']['out_dir']))+1), length=config['output']['length'], bpm=config['params']['bpm'], track=0, data_size=0):
 

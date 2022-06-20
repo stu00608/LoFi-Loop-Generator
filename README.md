@@ -25,18 +25,14 @@ pitch
 ## Docker
 
 - Please follow Tensorflow Docker Installation first.
+- Modify the params in `entry.sh`.
 
 ```
-docker build --build-arg wandbapi=$MY_WANDB_API -t lofi . --no-cache
+docker build -t lofi . --no-cache
 docker run --gpus all -it --rm lofi
 ```
 
-```
-python train.py --name demo --datasize 1 --batch 64 --epochs 1000
-```
-
 - To move the output midi file to your disk, use `docker cp`.
-
 ```
 docker cp <container_id>:/LoFi-Loop-Generator/default10-64-1000.mid /path/in/your/disk
 ```
