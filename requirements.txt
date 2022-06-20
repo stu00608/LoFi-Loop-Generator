@@ -1,9 +1,9 @@
+gensim==4.2.0
 matplotlib==3.5.1
 numpy==1.19.2
-pandas==1.4.2
+pretty_midi==0.2.9
 pypianoroll==1.0.4
 PyYAML==6.0
-seaborn==0.11.2
-tensorflow==2.8.0
+tensorflow==2.9.1
 tensorflow_gpu==2.4.0
 tqdm==4.64.0

@@ -226,13 +226,13 @@ class Dataset():
             self.encoded_midi_list.append(midi)
             self.encoded_data_list.append(np.array(midi.all_encoded_beats))
 
-    def getSingleTrackTrainingData(self, track=0):
+    def getSingleTrackTrainingData(self, data_size=0, track=0):
 
         data = [tracks[track] for tracks in self.encoded_data_list]
 
         x_train = []
         y_train = []
-        data_size = config['params']['data_size']
+        data_size = config['params']['data_size'] if data_size == 0 else data_size
 
         for midi in data:
             for i in range(len(midi)-data_size):

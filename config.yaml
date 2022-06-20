@@ -3,13 +3,14 @@ path:
   model_dir: models/
   out_dir: outputs/
 params:
-  data_size: 10
+  data_size: 1
   vocab_size: 100
-  batch_size: 16
-  epochs: 20
+  batch_size: 64
+  epochs: 1000
   intensity: 90
   resolution: 24
   tracks: 4
   bpm: 120
 output:
+  wandb: True
   length: 20
