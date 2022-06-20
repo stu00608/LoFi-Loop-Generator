@@ -1,5 +1,10 @@
-gensim
-matplotlib
-pretty_midi
-PyYAML
-tqdm
+gensim==4.2.0
+matplotlib==3.3.4
+numpy==1.19.4
+pretty_midi==0.2.9
+pypianoroll==1.0.4
+PyYAML==6.0
+tensorflow==2.9.1
+tensorflow_gpu==2.4.0
+tqdm==4.64.0
+wandb==0.12.18

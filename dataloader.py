@@ -1,6 +1,3 @@
-from pickle import EMPTY_DICT
-from tensorflow.keras.preprocessing.text import one_hot, Tokenizer
-from tensorflow.keras.utils import to_categorical
 import pretty_midi
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +5,6 @@ import yaml
 from glob import glob
 from tqdm import tqdm
 from typing import List
-from midi_processing import *
 
 MAX_PITCH = 128
 MIN_PITCH = 0
