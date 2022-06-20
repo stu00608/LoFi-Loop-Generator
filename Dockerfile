@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb
 RUN dpkg -i cuda-keyring_1.0-1_all.deb
 
+ARG wandbapi
+
 RUN apt update -y
 RUN pip install --upgrade pip
 
@@ -20,4 +22,5 @@ RUN git submodule init
 RUN git submodule update
 
 RUN pip install -r requirements.txt
-CMD [ "bash" ]
+RUN wandb login ${wandbapi}
+CMD [ "python", "train.py" ]
