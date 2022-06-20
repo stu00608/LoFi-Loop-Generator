@@ -52,5 +52,5 @@ if __name__ == '__main__':
     # TODO: Make few inferences and upload to wandb.
     sequence = model.generate(dataset, beatdict)
     new_midi = MidiData()
-    new_midi.decode(sequence, filename=args.name+str(args.datasize) +
+    new_midi.decode(sequence, filename=args.name+'-'+str(args.datasize) +
                     '-'+str(args.batch)+'-'+str(args.epochs)+'.mid')

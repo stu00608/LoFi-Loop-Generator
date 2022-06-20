@@ -32,12 +32,62 @@ docker build -t lofi . --no-cache
 docker run --gpus all -it --rm lofi
 ```
 
+### Start training
+
 ```
 ./entry.sh
+```
+
+### Generate using trained weight.
+
+- Need to give the same datasize, batch_size.
+- Modify the config file, disable wandb.
+  - TODO: Need a way to detect if it's using generate.py
+
+```
+path:
+  data_dir: js-fakes/midi/*.mid
+  model_dir: models/
+  out_dir: outputs/
+params:
+  data_size: 1
+  vocab_size: 100
+  batch_size: 64
+  epochs: 1000
+  intensity: 90
+  resolution: 24
+  tracks: 4
+  bpm: 120
+output:
+  wandb: False                    <---------- Here
+  length: 20
+```
+
+- Copy the weight path.
+
+```
+WEIGHT=models/model-exp0620-14-2.5837-bigger.hdf5
+```
+
+- Then run the script.
+
+```
+python generate.py --name exp0620 --weights $WEIGHT --datasize 1 --batch 128
 ```
 
 - To move the output midi file to your disk, use `docker cp`.
 
 ```
-docker cp <container_id>:/lofi/default10-64-1000.mid /path/in/your/disk
+docker cp <container_id>:/lofi/<midi_file_name> /path/in/your/disk
 ```
+
+## Trouble Shooting
+
+```
+Traceback (most recent call last):
+  File "train.py", line 30, in <module>
+    dataset = pickle.load(f)
+ValueError: unsupported pickle protocol: 5
+```
+
+- Need to do `rm data/loaded_dataset`
