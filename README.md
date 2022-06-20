@@ -27,7 +27,12 @@ pitch
 - Please follow Tensorflow Docker Installation first.
 
 ```
-docker build --build-arg $MY_WANDB_API -t lofi . --no-cache
+docker build --build-arg wandbapi=$MY_WANDB_API -t lofi . --no-cache
+docker run --gpus all -it --rm lofi
+```
+
+```
+python train.py --name demo --datasize 1 --batch 64 --epochs 1000
 ```
 
 - To move the output midi file to your disk, use `docker cp`.
