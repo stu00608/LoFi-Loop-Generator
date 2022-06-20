@@ -1,5 +1,5 @@
 path:
-  data_dir: /home/stu00608/Repositories/js-fakes/midi/*.mid
+  data_dir: js-fakes/midi/*.mid
   model_dir: models/
   out_dir: outputs/
 params:

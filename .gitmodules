@@ -1,0 +1,3 @@
+[submodule "js-fakes"]
+	path = js-fakes
+	url = https://github.com/omarperacha/js-fakes.git
