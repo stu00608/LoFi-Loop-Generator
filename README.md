@@ -1,25 +1,8 @@
-## Environment
-
-- Python 3.8.12
-
-Some description :
-
-    Data :                js-fakes https://github.com/omarperacha/js-fakes
-                          It's a midi dataset included 500 4 tracks midi files.
-
-    Representation :      Read file as pianoroll, every beat will represent as an array with shape (resolution, 128).
-                          Then make the pianoroll matrix to a time series data. The encoded beat data is our "word". Use
-                          Tokenizer to map most frequently used 200 data into a dictionary, and map it as a integer. Finally
-                          turn the integer to one_hot array.
+# Run training.
 
 ```
-pitch
-  4| 0 0 0 0 0 0
-  3| 1 1 0 0 0 0                       Tokenizer
-  2| 0 0 1 1 0 0 ... ---> 3-2#2-2#1-2 -----------> int -> one_hot array.
-  1| 0 0 0 0 1 1
-  0| 0 0 0 0 0 0
-              beat
+git clone -b note https://github.com/stu00608/LoFi-Loop-Generator.git
+cd LoFi-Loop-Generator
 ```
 
 ## Docker
@@ -66,28 +49,18 @@ output:
 - Copy the weight path.
 
 ```
+# For example.
 WEIGHT=models/model-exp0620-14-2.5837-bigger.hdf5
 ```
 
 - Then run the script.
 
 ```
-python generate.py --name exp0620 --weights $WEIGHT --datasize 1 --batch 128
+python generate.py --name default-output --weights $WEIGHT --datasize 1 --batch 64
 ```
 
-- To move the output midi file to your disk, use `docker cp`.
+- To move the output midi file to your disk, open another terminal and use `docker cp`.
 
 ```
 docker cp <container_id>:/lofi/<midi_file_name> /path/in/your/disk
 ```
-
-## Trouble Shooting
-
-```
-Traceback (most recent call last):
-  File "train.py", line 30, in <module>
-    dataset = pickle.load(f)
-ValueError: unsupported pickle protocol: 5
-```
-
-- Need to do `rm data/loaded_dataset`
