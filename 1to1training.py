@@ -59,7 +59,7 @@ def __split_input_target(chunk):
 idxOfBeat = np.array([beat2idx[beat] for beat in train_data])
 print(len(idxOfBeat))
 tfDataset = tf.data.Dataset.from_tensor_slices(idxOfBeat)
-sequences = tfDataset.batch(256+1, drop_remainder=True)
+sequences = tfDataset.batch(config['params']['sequence_length']+1, drop_remainder=True)
 # o o o o o
 #  \ \ \ \ \
 #   x x x x x
@@ -70,7 +70,7 @@ train_data = ds.shuffle(10000).batch(config['params']['batch_size'], drop_remain
 idxOfBeat = np.array([beat2idx[beat] for beat in test_data])
 print(len(idxOfBeat))
 tfDataset = tf.data.Dataset.from_tensor_slices(idxOfBeat)
-sequences = tfDataset.batch(256+1, drop_remainder=True)
+sequences = tfDataset.batch(config['params']['sequence_length']+1, drop_remainder=True)
 # o o o o o
 #  \ \ \ \ \
 #   x x x x x

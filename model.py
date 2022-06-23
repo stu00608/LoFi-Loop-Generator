@@ -93,7 +93,7 @@ class LoFiLoopNet():
         model.add(Embedding(vocab_size, output_dim=256,
                   batch_input_shape=(config['params']['batch_size'], None)))
         for _ in range(4):
-            model.add(LSTM(512, return_sequences=True, stateful=True,
+            model.add(LSTM(512, return_sequences=True, stateful=False,
                            dropout=dropout, recurrent_dropout=dropout))
             model.add(BatchNormalization())
 
