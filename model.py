@@ -1,3 +1,4 @@
+from re import I
 from wandb.keras import WandbCallback
 import wandb
 from dataloader import *
@@ -8,7 +9,8 @@ import yaml
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout, BatchNormalization
+from tensorflow.keras.layers import LSTM, Dense, Dropout, BatchNormalization, Embedding
+from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint
 from gensim.models import Word2Vec
 physical_devices = tf.config.list_physical_devices('GPU')
@@ -79,27 +81,29 @@ class BeatDictionary():
 
 class LoFiLoopNet():
 
-    def __init__(self, name, input_shape, output_units) -> None:
+    def __init__(self, name, vocab_size) -> None:
         self.name = name
-        self.build(input_shape, output_units)
+        self.build(vocab_size)
 
-    def build(self, input_shape, output_units):
+    def build(self, vocab_size):
+
+        dropout = 0.2
+
         model = Sequential()
-        model.add(LSTM(
-            256,
-            input_shape=input_shape,
-            return_sequences=True,
-        ))
-        model.add(LSTM(512, return_sequences=True))
-        model.add(Dropout(0.2))
-        model.add(LSTM(512))
+        model.add(Embedding(vocab_size, output_dim=256,
+                  batch_input_shape=(config['params']['batch_size'], None)))
+        for _ in range(4):
+            model.add(LSTM(512, return_sequences=True, stateful=True,
+                           dropout=dropout, recurrent_dropout=dropout))
+            model.add(BatchNormalization())
+
+        model.add(Dense(512, activation='relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.3))
-        model.add(Dense(256, activation='relu'))
-        model.add(BatchNormalization())
-        model.add(Dropout(0.3))
-        model.add(Dense(output_units, activation='softmax'))
-        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+        model.add(Dropout(dropout))
+        model.add(Dense(vocab_size, activation='softmax'))
+
+        model.compile(loss='categorical_crossentropy', optimizer=Adam(
+            learning_rate=0.00001), metrics=['acc'])
         self.model = model
 
         self.filepath = config['path']['model_dir'] + \
@@ -116,7 +120,7 @@ class LoFiLoopNet():
     def summary(self):
         self.model.summary()
 
-    def train(self, x_train, y_train, verbose=1, epochs=config['params']['epochs'], batch_size=config['params']['batch_size'], data_size=config['params']['data_size']):
+    def train(self, train_dataset, test_dataset, verbose=1, epochs=config['params']['epochs'], batch_size=config['params']['batch_size'], data_size=config['params']['data_size']):
 
         config['params']['data_size'] = data_size
         config['params']['batch_size'] = batch_size
@@ -131,7 +135,7 @@ class LoFiLoopNet():
             print("❌ Wandb Disabled in config.")
 
         self.history = self.model.fit(
-            x=x_train, y=y_train, batch_size=batch_size, epochs=epochs, validation_split=0.05, verbose=verbose, callbacks=self.callbacks)
+            train_dataset, validation_data=test_dataset, epochs=epochs, verbose=verbose, callbacks=self.callbacks)
 
         if config['output']['wandb']:
             wandb.save(os.path.join(config['path']['model_dir'], self.filepath))

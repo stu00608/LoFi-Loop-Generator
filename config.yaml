@@ -1,16 +1,17 @@
 path:
   data_dir: js-fakes/midi/*.mid
+  test_dir: js-fakes/jsf-extended/*.mid
   model_dir: models/
   out_dir: outputs/
 params:
   data_size: 1
   vocab_size: 100
-  batch_size: 64
-  epochs: 1000
+  batch_size: 16
+  epochs: 10000
   intensity: 90
   resolution: 24
   tracks: 4
   bpm: 120
 output:
-  wandb: False
+  wandb: True
   length: 20

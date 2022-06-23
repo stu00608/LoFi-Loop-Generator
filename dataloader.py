@@ -220,7 +220,7 @@ class Dataset():
             midi = MidiData(file)
             midi.encode()
             self.encoded_midi_list.append(midi)
-            self.encoded_data_list.append(np.array(midi.all_encoded_beats))
+            self.encoded_data_list.append(midi.all_encoded_beats)
 
     def getSingleTrackTrainingData(self, data_size=0, track=0):
 
@@ -242,7 +242,7 @@ class Dataset():
 
     def getConcatenatedTracks(self):
         '''
-        Return tracks concat. For word2vec training.
+        Return a 2-dims list. Each element is a track of a midi.
         '''
 
         ds = [i.tolist() for i in self.encoded_data_list]
