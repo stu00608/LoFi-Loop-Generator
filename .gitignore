@@ -3,3 +3,4 @@ outputs/**
 __pycache__
 wandb/**
 data/**
+old_weights/**

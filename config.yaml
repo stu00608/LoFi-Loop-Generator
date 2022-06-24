@@ -13,7 +13,7 @@ params:
   tracks: 4
   bpm: 120
   sequence_length: 256
-  stateful: False
+  stateful: True
 output:
-  wandb: True
+  wandb: False
   length: 20

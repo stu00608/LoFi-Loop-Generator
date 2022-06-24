@@ -81,19 +81,19 @@ class BeatDictionary():
 
 class LoFiLoopNet():
 
-    def __init__(self, name, vocab_size) -> None:
+    def __init__(self, name, vocab_size, batch_size) -> None:
         self.name = name
-        self.build(vocab_size)
+        self.build(vocab_size, batch_size)
 
-    def build(self, vocab_size):
+    def build(self, vocab_size, batch_size=config['params']['batch_size']):
 
         dropout = 0.2
 
         model = Sequential()
         model.add(Embedding(vocab_size, output_dim=256,
-                  batch_input_shape=(config['params']['batch_size'], None)))
+                  batch_input_shape=(batch_size, None)))
         for _ in range(4):
-            model.add(LSTM(512, return_sequences=True, stateful=False,
+            model.add(LSTM(512, return_sequences=True, stateful=config['params']['stateful'],
                            dropout=dropout, recurrent_dropout=dropout))
             model.add(BatchNormalization())
 

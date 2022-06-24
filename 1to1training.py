@@ -77,8 +77,10 @@ sequences = tfDataset.batch(config['params']['sequence_length']+1, drop_remainde
 ds = sequences.map(__split_input_target)
 test_data = ds.shuffle(10000).batch(config['params']['batch_size'], drop_remainder=True)
 
+print(f'\nTraining dataset : {train_data}\n')
 
-model = LoFiLoopNet('1to1-dev', vocab_size)
-model.summary()
 
-model.train(train_data, test_data)
+# model = LoFiLoopNet('1to1-dev', vocab_size)
+# model.summary()
+
+# model.train(train_data, test_data)
