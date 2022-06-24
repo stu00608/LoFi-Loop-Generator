@@ -12,6 +12,8 @@ params:
   resolution: 24
   tracks: 4
   bpm: 120
+  sequence_length: 256
+  stateful: False
 output:
   wandb: True
   length: 20
