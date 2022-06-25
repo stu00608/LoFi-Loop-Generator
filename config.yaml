@@ -1,19 +1,19 @@
 path:
-  data_dir: js-fakes/midi/*.mid
+  # data_dir: js-fakes/midi/*.mid
+  # test_dir: js-fakes/jsf-extended/*.mid
+  data_dir: /home/stu00608/Datasets/adl-piano-midi/midi/**/*.mid
   test_dir: js-fakes/jsf-extended/*.mid
   model_dir: models/
   out_dir: outputs/
 params:
-  data_size: 1
-  vocab_size: 100
-  batch_size: 16
-  epochs: 10000
-  intensity: 90
-  resolution: 24
-  tracks: 4
-  bpm: 120
+  batch_size: 4
+  epochs: 200
+  layers: 3
+  unit: 512
+  dropout: 0.2
+  embed_size: 256
   sequence_length: 256
   stateful: True
 output:
-  wandb: False
+  wandb: True
   length: 20
