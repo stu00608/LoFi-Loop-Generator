@@ -6,14 +6,14 @@ path:
 params:
   bpm: 120
   batch_size: 16
-  epochs: 500
+  epochs: 1000
   layers: 2
   unit: 512
   dropout: 0.2
   embed_size: 256
-  sequence_length: 8
+  sequence_length: 16
   stateful: True
   track_size: 4
 output:
   wandb: True
-  length: 20
+  length: 50
