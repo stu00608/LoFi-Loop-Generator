@@ -6,7 +6,7 @@ path:
 params:
   bpm: 120
   batch_size: 16
-  epochs: 1000
+  epochs: 5000
   layers: 2
   unit: 512
   dropout: 0.2
