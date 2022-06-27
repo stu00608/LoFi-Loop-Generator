@@ -15,5 +15,5 @@ params:
   stateful: True
   track_size: 4
 output:
-  wandb: True
+  wandb: False
   length: 50
