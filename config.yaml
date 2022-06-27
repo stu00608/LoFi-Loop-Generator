@@ -5,15 +5,15 @@ path:
   out_dir: outputs/
 params:
   bpm: 120
-  batch_size: 16
-  epochs: 5000
+  batch_size: 64
+  epochs: 500
   layers: 2
   unit: 512
   dropout: 0.2
   embed_size: 256
   sequence_length: 16
-  stateful: True
+  stateful: False
   track_size: 4
 output:
-  wandb: False
+  wandb: True
   length: 50
